@@ -1,0 +1,2306 @@
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+<!doctype html><html lang="en_US" class="a-no-js" data-19ax5a9jf="dingo">
+    
+
+
+
+
+
+
+
+
+
+ 
+
+
+    <head><script>var aPageStart = (new Date()).getTime();</script><meta charset="utf-8"/>
+        
+        
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        
+        
+            
+                <title>Setting Up an Input Replay System | GameMaker</title>
+                
+            
+            
+            
+        
+
+        
+        
+            
+                
+            
+            
+        
+
+        
+        
+        
+        
+        
+        
+        <meta name="google-site-verification" content="wfEDah_6uJe9Y7uIfLrVycd_efr8wQ9YO-fM_5MI5w0" />
+        
+        <meta name="google-site-verification" content="Eu8BqTWMhRRdfCAdqUh2RYb3SjAiuFp4wmgTtGcteM0" />
+        
+        
+            <link rel="alternate" href="https://developer.amazon.com/docs/gamemaker/input-replay-system.html" hreflang="en_US" />
+            
+                
+                <link rel="canonical" href="https://developer.amazon.com/docs/gamemaker/input-replay-system.html" />
+            
+        
+        
+        <meta name="google-site-verification" content="KHmp6TUPKc1gHlM9TuB842pcV7TxZVV6TgenZtsYoNY" />
+        
+        <meta name="msvalidate.01" content="9761B379C1B64F587D71BA40337FDD07" />
+        <meta name="description" content="GameMaker is an engine that works with frames instead of delta time and thanks to this advantage, we can trivially record the player inputs and match them with a frame number." />
+        <meta name="keywords" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-5LVXJD4');</script>
+        <!-- End Google Tag Manager -->
+
+        <script language="JavaScript" type="text/javascript">
+
+        var digitalData ={
+            page:{
+                pageInfo: {
+                    pageInstanceID: "docs\/gamemaker\/input\-replay\-system.html",
+                    path: "\/docs\/gamemaker\/input\-replay\-system.html",
+                    pageID: "",
+                    pageTitle: "",
+                    pageType: "DeX",
+                    primaryCategory: "appstore",
+                    pageName: "",
+                    language: "en_US"
+                }
+            },
+            user:{
+                userID: "",
+                ipAddress: "192.197.54.35"
+            }
+        };
+        var urlSplit = "\/docs\/gamemaker\/input\-replay\-system.html".split("/");
+        var trailingSlash = urlSplit.pop();
+        var pTitle = trailingSlash;
+        if (trailingSlash == ""){
+            pTitle = urlSplit.pop()
+        }
+
+        
+        if ("".indexOf("search") !== -1) {
+            digitalData.page.pageInfo.searchResultsNum = "";
+        }
+
+        if ("".indexOf("dex-home") !== -1){
+            digitalData.page.pageInfo.pageID = "Home";
+            digitalData.page.pageInfo.pageTitle = "Home";
+            digitalData.page.pageInfo.primaryCategory = "Home";
+        } else {
+            digitalData.page.pageInfo.pageID = pTitle;
+            pTitle = pTitle.replace(/(^|-)[a-z]/g,function(f){return f.toUpperCase();});
+            pTitle = pTitle.replace(/-/g, '');
+            digitalData.page.pageInfo.pageTitle = pTitle;
+            var pCat = digitalData.page.pageInfo.primaryCategory;
+            pCat = pCat.replace(/(^|-)[a-z]/g,function(f){return f.toUpperCase();});
+            pCat = pCat.replace(/-/g, '');
+            digitalData.page.pageInfo.primaryCategory = pCat;
+        }
+
+        var pageNameStr = "" + digitalData.page.pageInfo.primaryCategory;
+        //Todo: add in logic for sub-categories when AOI is implemented.
+        if (digitalData.page.pageInfo.pageTitle != null){
+        	if (pageNameStr != ""){
+        		pageNameStr += ":";
+        	}
+            pageNameStr += digitalData.page.pageInfo.pageTitle;
+        }
+        digitalData.page.pageInfo.pageName = pageNameStr;
+
+        
+        (function (w) {
+           w.URLSearchParams = w.URLSearchParams || function (searchString) {
+               var self = this;
+               self.searchString = searchString;
+               self.get = function (name) {
+                   var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(self.searchString);
+                   if (results == null) {
+                       return null;
+                   }
+                   else {
+                       return decodeURI(results[1]) || 0;
+                   }
+               };
+           }
+        })(window);
+
+        </script>
+
+
+
+        <script src="https://m.media-amazon.com/images/G/01/alexa-blueprints/jquery-3.3.1.min._CB1518646291_.js"></script>
+        <script src="https://assets.adobedtm.com/4737bccac162/76767685e2ba/launch-148545904475.js" integrity="sha384-LtZKLRKG9YRkF6bsVx/AK9ZjrAdP+a8Pa9h0FSHTy3ifhf5Upp4iurrnFzLLZOlg" crossorigin="anonymous" async>
+
+        </script>
+
+        <script src="https://dwrl96u0lgux5.cloudfront.net/CoveoJsSearch.min.js"></script>
+        
+        <link rel="stylesheet" href="https://dwrl96u0lgux5.cloudfront.net/CoveoFullSearch.min.css" />
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const organizationId = "amazoncomproduction9q1by2xb";
+            const apiKey = "xx42d66989-6d5b-4bd4-bc36-d3b3a04aa40f";
+            Coveo.SearchEndpoint.configureCloudV2Endpoint(organizationId, apiKey);
+          })
+        </script>
+        
+<script type="text/javascript">
+(function() {
+  var didInit = false;
+  function initMunchkin() {
+    if(didInit === false) {
+      didInit = true;
+      Munchkin.init('365-EFI-026');
+    }
+  }
+  var s = document.createElement('script');
+  s.type = 'text/javascript';
+  s.async = true;
+  s.src = '//munchkin.marketo.net/munchkin.js';
+  s.onreadystatechange = function() {
+    if (this.readyState == 'complete' || this.readyState == 'loaded') {
+      initMunchkin();
+    }
+  };
+  s.onload = initMunchkin;
+  document.getElementsByTagName('head')[0].appendChild(s);
+})();
+</script>
+
+
+        
+        <link rel="stylesheet" href="https://images-na.ssl-images-amazon.com/images/I/11EIQ5IGqaL._RC|01ZTHTZObnL.css,41wZkyTaWoL.css,31Y8m1dzTdL.css,013z33uKh2L.css,017DsKjNQJL.css,0131vqwP5UL.css,41EWOOlBJ9L.css,11TIuySqr6L.css,01ElnPiDxWL.css,11bGSgD5pDL.css,01Dm5eKVxwL.css,01IdKcBuAdL.css,01y-XAlI+2L.css,21N4kUH7pxL.css,01oDR3IULNL.css,41CYNGpGlrL.css,01XPHJk60-L.css,114y0SIP+yL.css,21aPhFy+riL.css,11gneA3MtJL.css,21fecG8pUzL.css,01ulGzBW88L.css,01CFUgsA-YL.css,31C80IiXalL.css,11qour3ND0L.css,11gKCCKQV+L.css,11061HxnEvL.css,11oHt2HYxnL.css,013RDhw9hoL.css,11JQtnL-6eL.css,116v6uYvN6L.css,11jtXRmppwL.css,01QrWuRrZ-L.css,21zuRztKjtL.css,11QyqG8yiqL.css,11K24eOJg4L.css,11F2+OBzLyL.css,01890+Vwk8L.css,11Y05DTEL6L.css,01cbS3UK11L.css,21F85am0yFL.css,01giMEP+djL.css_.css?AUIClients/AmazonUI#us.not-trident" />
+<link rel="stylesheet" href="https://images-na.ssl-images-amazon.com/images/I/714GIIqZzkL.css?AUIClients/DeXWebsiteAUIAssets" />
+
+        
+        
+    </head>
+
+
+    <body class="a-m-us a-aui_72554-c a-aui_accordion_a11y_role_354025-c a-aui_killswitch_csa_logger_372963-c a-aui_launch_2021_ally_fixes_392482-c a-aui_pci_risk_banner_210084-c a-aui_preload_261698-c a-aui_rel_noreferrer_noopener_309527-c a-aui_template_weblab_cache_333406-c a-aui_tnr_v2_180836-c"><div id="a-page"><script type="a-state" data-a-state="{&quot;key&quot;:&quot;a-wlab-states&quot;}">{"AUI_TNR_V2_180836":"C","AUI_ACCORDION_A11Y_ROLE_354025":"C","AUI_PRELOAD_261698":"C","AUI_LAUNCH_2021_ALLY_FIXES_392482":"C","AUI_TEMPLATE_WEBLAB_CACHE_333406":"C","AUI_72554":"C","AUI_KILLSWITCH_CSA_LOGGER_372963":"C","AUI_REL_NOREFERRER_NOOPENER_309527":"C","AUI_PCI_RISK_BANNER_210084":"C"}</script>
+        <link rel="stylesheet" type="text/css"
+            href="https://m.media-amazon.com/images/G/01/Fonts/FontAwesome/css/font-awesome.min._V516135338_.css">
+        
+
+
+
+
+
+
+
+
+<header class='dpHeader dphThemedark'>
+    <div class='dphTopBar clearfix'>
+        <div class='dphLeft'>
+            <div class='dphMenuToggle'>
+                <i class='dphMenuIcon'></i>
+                <i class='dphMenuBackIcon'></i>
+            </div>
+            <a class='dphLogo' href='/apps-and-games'>
+                <img src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/logos/amazonAppstoreLogoDarkBG1x_new.png" 
+                     srcset="https://m.media-amazon.com/images/G/01/mobile-apps/dex/logos/amazonAppstoreLogoDarkBG1x_new.png 1x, https://m.media-amazon.com/images/G/01/mobile-apps/dex/logos/amazonAppstoreLogoDarkBG2x.png 2x" 
+                     alt="Amazon Developer Logo">
+            </a>
+        </div>
+        <div class='dphRight'>
+            
+
+
+
+<div class="dphSearchBarWrap">
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        Coveo.initSearchbox(
+          document.getElementById("dphSearchBox"),
+          "/search"
+        );
+        $('#dphSearchBox .magic-box input').attr('placeholder', 'Search...');
+      })
+    </script>
+    <div class="dphSearchIconWrap">
+        <button id="searchButton" class="dphButton dphButtonSearch">
+            <svg class="dphSearchIcon" viewBox="0 0 21 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" shape-rendering="geometricPrecision">
+                <circle stroke="#000000" stroke-width="2" cx="8" cy="8" r="7" fill="transparent"></circle>
+                <path d="M13.5,13.5 L19.5,19.5" id="Path-1" stroke="#000000" stroke-width="2.6" stroke-linecap="round"></path>
+            </svg>
+        </button>
+        <button id="dphSearchCancel">Cancel</button>
+    </div>
+    <div class="dphSearch active">
+        <div class="dphSearchWrap">
+            <div id="dphSearchBox" class="CoveoSearchInterface" data-excerpt-length="120"
+                 data-pipeline="AppstoreAllContent"
+                 data-enable-duplicate-filtering="true" data-allow-queries-without-keywords="false">
+                <div class="CoveoAnalytics" data-anonymous="true" data-search-hub="dex-header-search"></div>
+                <div class="coveo-search-section">
+                    <script class="CoveoPipelineContext" type="text/context">
+                    {
+                        "language": "English"
+                    }
+                    </script>
+                    <div class="CoveoSearchbox" data-enable-omnibox="true" data-enable-query-syntax="true"
+                         data-search-as-you-type-delay="300">
+                        <div class="CoveoOmniboxResultList" data-layout="list">
+                            <div class="coveo-show-if-results">
+                                <script class="result-template" type="text/html">
+                                    <div>
+                                        <div class="co-highlight">
+                                            <div><a class='CoveoResultLink'></a></div>
+                                            <div class='CoveoExcerpt'></div>
+                                        </div>
+                                    </div>
+                                </script>
+                            </div>
+                            <div class="coveo-show-if-no-results">
+                                <p>No results found</p>
+                                <div class="co-empty">Try a different or more specific query</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            
+            
+                
+                
+                    <a href="/home.html" class='dphConsole dphLink'>Developer Console</a>
+                
+            
+
+            
+            
+
+
+
+
+
+
+
+    
+
+<div class='dphUserInfo'>
+    
+        
+            <a class="dphLink" href="/settings/console/registration?return_to=/docs/gamemaker/input-replay-system.html">Sign In</a>
+        
+        
+    
+</div>
+
+            
+            
+
+
+<style>
+    #notification-counter {
+        position: absolute;
+        top: 2px;
+        padding: 0 2px;
+        min-width: 20px;
+        background: #BF2727;
+        color: white;
+        font-size: 11px;
+        border-radius: 3px;
+        line-height: 20px;
+        text-align: center;
+    }
+    #notification_click_icon {
+        width: 32px;
+        height: 32px;
+        background-color: #31465f;
+        text-align: center;
+        line-height: 32px;
+        border-radius: 50%;
+        margin-right: 15px;
+        color: white;
+        font-weight: 300;
+        cursor: pointer;
+    }
+    #notification-placeholder {
+        position: absolute;
+        top:45px;
+    }
+    #notification_flyout_iframe_id {
+        display: none;
+        position: absolute;
+        width: 425px;
+        border: none;
+        transform: translate(-80%);
+        transition: all 0.2s;
+    }
+
+    @media screen and (max-width: 992px) {
+        #notification_click_icon {
+            position: fixed;
+            display: inline-block;
+            right: 44px;
+        }
+        #notification_click_icon ~ .dphSearch.active {
+            position: relative;
+            z-index: 0;
+        }
+        #notification-placeholder {
+            top:28px;
+        }
+        #notification-counter {
+            top: -6px;
+        }
+    }
+
+    @media screen and (max-width: 414px) {
+        #notification_flyout_iframe_id {
+            transform: none;
+            right: -99px;
+            width: 100vw;
+        }
+        #notification_click_icon ~ .dphSearch.active {
+            position: relative;
+            z-index: 0;
+        }
+    }
+</style>
+
+
+
+
+
+
+            
+            
+                
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+<div id='navFlyout?' class='dphFlyoutItem dphDevConsoleLinkTopBar dphButton'>
+    <span class='dphConsole dphLink'>?</span>
+    <div class='dphDropdownWrap'>
+        <nav class='dphDropdown accrItem'>
+            <div class='dpIconArrow accrHandle'></div>
+            
+            
+            
+                
+                    <ul class='dphDropdownList'>
+                        <li class='dphdItem'><a href='/support/'>Support</a></li>
+                        <li class='dphdItem'><a href='/documentation/'>Docs</a></li>
+                        <li class='dphdItem'><a href='https://forums.developer.amazon.com/index.html'>Forums</a></li>
+                        <li class='dphdItem'><a href='/support/contact-us'>Contact Us</a></li>
+                    </ul>
+                
+            
+        </nav>
+    </div>
+</div>
+
+                
+            
+
+        </div>
+    </div>
+
+    <div class='dphNavigation accordion' data-accr_active_width='327'>
+        <div class='dphnWrap'>
+            
+
+
+
+
+
+
+
+    
+
+<div class='dphUserInfo'>
+    
+        
+            <a class="dphLink" href="/settings/console/registration?return_to=/docs/gamemaker/input-replay-system.html">Sign In</a>
+        
+        
+    
+</div>
+            
+
+
+
+
+
+
+    
+    
+        <a href="/home.html" class='dphConsole dphLink'>Developer Console</a>
+    
+
+            
+
+
+
+
+
+<nav class="dpPrimaryNav">
+    <ul class="dppnItems">
+        
+            
+                
+                    
+                    
+                    
+                        
+                    
+                
+                <li class="dppnItem  accrItem">
+                    
+                        
+                            <a href="/apps-and-games/devices" class="dppnLink">
+                                Devices
+                            </a>
+                        
+                        
+                    
+                    
+                        <div class='dpIconArrow accrHandle'></div>
+                        <div class='dppnFlyoutWrap'>
+                            <div class='dppnSecondaryNavWrap'>
+                                <ul class="dppnFlyout dppnSecondaryNav">
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/apps-and-games/fire-tv" class="dppnfLink">
+                                                        <span class="dppnfTitle">Amazon Fire TV</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/apps-and-games/fire-tablets" class="dppnfLink">
+                                                        <span class="dppnfTitle">Fire tablet</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/apps-and-games/appstore-on-windows-11" class="dppnfLink">
+                                                        <span class="dppnfTitle">Appstore on<br>Windows 11</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                     
+                                </ul>
+                            </div>
+                        </div>
+                    
+                </li>        
+            
+        
+            
+                
+                    
+                    
+                    
+                        
+                    
+                
+                <li class="dppnItem  accrItem">
+                    
+                        
+                            <a href="/apps-and-games/services-and-apis" class="dppnLink">
+                                Engage
+                            </a>
+                        
+                        
+                    
+                    
+                </li>        
+            
+        
+            
+                
+                    
+                    
+                    
+                        
+                    
+                
+                <li class="dppnItem  accrItem">
+                    
+                        
+                            <a href="/apps-and-games/services-and-apis/monetization" class="dppnLink">
+                                Monetize
+                            </a>
+                        
+                        
+                    
+                    
+                </li>        
+            
+        
+            
+                
+                    
+                    
+                    
+                        
+                    
+                
+                <li class="dppnItem  accrItem">
+                    
+                        
+                            <a href="/apps-and-games/test" class="dppnLink">
+                                Test
+                            </a>
+                        
+                        
+                    
+                    
+                </li>        
+            
+        
+            
+                
+                    
+                    
+                    
+                        
+                    
+                
+                <li class="dppnItem  accrItem">
+                    
+                        
+                            <a href="/docs/app-submission/getting-started.html" class="dppnLink">
+                                Submit
+                            </a>
+                        
+                        
+                    
+                    
+                        <div class='dpIconArrow accrHandle'></div>
+                        <div class='dppnFlyoutWrap'>
+                            <div class='dppnSecondaryNavWrap'>
+                                <ul class="dppnFlyout dppnSecondaryNav">
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/docs/app-submission/presubmission-checklist.html" class="dppnfLink">
+                                                        <span class="dppnfTitle">Pre-submission checklist</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/docs/app-submission/submitting-apps-to-amazon-appstore.html" class="dppnfLink">
+                                                        <span class="dppnfTitle">Step-by-step guides</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/docs/app-submission-api/overview.html" class="dppnfLink">
+                                                        <span class="dppnfTitle">App Submission API</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                     
+                                </ul>
+                            </div>
+                        </div>
+                    
+                </li>        
+            
+        
+            
+                
+                    
+                    
+                    
+                        
+                    
+                
+                <li class="dppnItem  accrItem">
+                    
+                        
+                            <a href="/documentation" class="dppnLink">
+                                Docs
+                            </a>
+                        
+                        
+                    
+                    
+                        <div class='dpIconArrow accrHandle'></div>
+                        <div class='dppnFlyoutWrap'>
+                            <div class='dppnSecondaryNavWrap'>
+                                <ul class="dppnFlyout dppnSecondaryNav">
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                
+                                                    <span class="dppnfLink">
+                                                        <span class="dppnfTitle">Amazon Fire TV</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </span>
+                                                
+                                            
+                                            
+                                                <div class='dpIconArrow accrHandle'></div>
+                                                <div class='dppnLevel3NavWrap'>
+                                                    <ul class="dppnFlyout dppnLevel3Nav">
+                                                        
+                                                            
+                                                                
+                                                                
+                                                                    
+                                                                
+                                                            
+                                                            <li class="dppnfItem ">
+                                                                
+                                                                    
+                                                                        <a href="/docs/fire-tv/device-specifications.html" class="dppnfLink">
+                                                                            <span class="dppnfTitle">Device specifications</span>
+                                                                            <span class="dppnfSubtitle"></span>
+                                                                        </a>
+                                                                    
+                                                                    
+                                                                
+                                                            </li>
+                                                        
+                                                            
+                                                                
+                                                                
+                                                                    
+                                                                
+                                                            
+                                                            <li class="dppnfItem ">
+                                                                
+                                                                    
+                                                                        <a href="/docs/fire-tv/getting-started-developing-apps-and-games.html" class="dppnfLink">
+                                                                            <span class="dppnfTitle">Getting started</span>
+                                                                            <span class="dppnfSubtitle"></span>
+                                                                        </a>
+                                                                    
+                                                                    
+                                                                
+                                                            </li>
+                                                         
+                                                    </ul>
+                                                </div>
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                
+                                                    <span class="dppnfLink">
+                                                        <span class="dppnfTitle">Fire tablet</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </span>
+                                                
+                                            
+                                            
+                                                <div class='dpIconArrow accrHandle'></div>
+                                                <div class='dppnLevel3NavWrap'>
+                                                    <ul class="dppnFlyout dppnLevel3Nav">
+                                                        
+                                                            
+                                                                
+                                                                
+                                                                    
+                                                                
+                                                            
+                                                            <li class="dppnfItem ">
+                                                                
+                                                                    
+                                                                        <a href="/docs/fire-tablets/ft-device-specifications.html" class="dppnfLink">
+                                                                            <span class="dppnfTitle">Device specifications</span>
+                                                                            <span class="dppnfSubtitle"></span>
+                                                                        </a>
+                                                                    
+                                                                    
+                                                                
+                                                            </li>
+                                                        
+                                                            
+                                                                
+                                                                
+                                                                    
+                                                                
+                                                            
+                                                            <li class="dppnfItem ">
+                                                                
+                                                                    
+                                                                        <a href="/docs/fire-tablets/ft-get-started.html" class="dppnfLink">
+                                                                            <span class="dppnfTitle">Getting started</span>
+                                                                            <span class="dppnfSubtitle"></span>
+                                                                        </a>
+                                                                    
+                                                                    
+                                                                
+                                                            </li>
+                                                         
+                                                    </ul>
+                                                </div>
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/docs/fire-tv/fire-os-overview.html" class="dppnfLink">
+                                                        <span class="dppnfTitle">Fire OS</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/docs/in-app-purchasing/iap-overview.html" class="dppnfLink">
+                                                        <span class="dppnfTitle">In-app purchasing</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                    
+                                        
+                                            
+                                            
+                                                
+                                            
+                                        
+                                        <li class="dppnfItem  accrItem">
+                                            
+                                                
+                                                    <a href="/docs/apps-and-games/sdk-downloads.html" class="dppnfLink">
+                                                        <span class="dppnfTitle">SDK Downloads</span>
+                                                        <span class="dppnfSubtitle"></span>
+                                                    </a>
+                                                
+                                                
+                                            
+                                            
+                                        </li>
+                                     
+                                </ul>
+                            </div>
+                        </div>
+                    
+                </li>        
+            
+        
+            
+                
+                    
+                    
+                    
+                        
+                    
+                
+                <li class="dppnItem  accrItem">
+                    
+                        
+                            <a href="/apps-and-games/blogs" class="dppnLink">
+                                Blog
+                            </a>
+                        
+                        
+                    
+                    
+                </li>        
+            
+        
+    </ul>
+</nav>
+            
+            
+                
+                
+                    
+
+
+
+
+
+
+
+<nav class="dpPrimaryNav dphDevConsoleLinkNavBar">
+    <ul class="dppnItems">
+        <li class="dppnItem accrItem">
+            <span class='dppnLink'>Support</span>
+            <div class="dpIconArrow accrHandle"></div>
+            <div class="dppnFlyoutWrap">
+                <div class="dppnSecondaryNavWrap">
+                    <ul class='dppnFlyout dppnSecondaryNav'>
+                        
+                        
+                            
+                                <li class='dppnfItem accrItem'><a class="dppnfLink" href='/support/'><span class="dppnfTitle">Support</span></a></li>
+                                <li class='dppnfItem accrItem'><a class="dppnfLink" href='/documentation/'><span class="dppnfTitle">Docs</span></a></li>
+                                <li class='dppnfItem accrItem'><a class="dppnfLink" href='https://forums.developer.amazon.com/index.html'><span class="dppnfTitle">Forums</span></a></li>
+                                <li class='dppnfItem accrItem'><a class="dppnfLink" href='/support/contact-us'><span class="dppnfTitle">Contact Us</span></a></li>
+                            
+                        
+                    </ul>
+                </div>
+            </div>
+        </li>
+    </ul>
+</nav>
+                
+            
+        </div>
+    </div>
+</header>
+<div id='dpHeaderPlaceholder'></div>
+
+
+<script>
+    (function(){
+        //Set placeholder height as soon as possible to eliminate page jump
+        "use strict";
+
+        var setHeaderPlaceholderHeight = function(header){
+            var placeholder = document.getElementById('dpHeaderPlaceholder');
+            var headerHeight = header[0].offsetHeight + "px";
+            placeholder.style.height = headerHeight;
+        }
+
+        var checkForHeader = function(){
+            var header = document.querySelectorAll('.dpHeader');
+            if(header.length){
+                setHeaderPlaceholderHeight(header);
+                window.clearInterval(checkForHeaderInterval);
+            }
+        }
+
+        var checkForHeaderInterval = window.setInterval(checkForHeader, 10);
+        checkForHeader();   //Run once immediately
+    }());
+</script>
+        <script>
+(function(f,h,Q,E){function F(a){u&&u.tag&&u.tag(q(":","aui",a))}function v(a,b){u&&u.count&&u.count("aui:"+a,0===b?0:b||(u.count("aui:"+a)||0)+1)}function m(a){try{return a.test(navigator.userAgent)}catch(b){return!1}}function x(a,b,c){a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent&&a.attachEvent("on"+b,c)}function q(a,b,c,e){b=b&&c?b+a+c:b||c;return e?q(a,b,e):b}function G(a,b,c){try{Object.defineProperty(a,b,{value:c,writable:!1})}catch(e){a[b]=c}return c}function ua(a,b,c){var e=
+c=a.length,g=function(){e--||(R.push(b),S||(setTimeout(ca,0),S=!0))};for(g();c--;)da[a[c]]?g():(z[a[c]]=z[a[c]]||[]).push(g)}function va(a,b,c,e,g){var d=h.createElement(a?"script":"link");x(d,"error",e);g&&x(d,"load",g);a?(d.type="text/javascript",d.async=!0,c&&/AUIClients|images[/]I/.test(b)&&d.setAttribute("crossorigin","anonymous"),d.src=b):(d.rel="stylesheet",d.href=b);h.getElementsByTagName("head")[0].appendChild(d)}function ea(a,b){return function(c,e){function g(){va(b,c,d,function(b){T?v("resource_unload"):
+d?(d=!1,v("resource_retry"),g()):(v("resource_error"),a.log("Asset failed to load: "+c));b&&b.stopPropagation?b.stopPropagation():f.event&&(f.event.cancelBubble=!0)},e)}if(fa[c])return!1;fa[c]=!0;v("resource_count");var d=!0;return!g()}}function wa(a,b,c){for(var e={name:a,guard:function(c){return b.guardFatal(a,c)},guardTime:function(a){return b.guardTime(a)},logError:function(c,d,e){b.logError(c,d,e,a)}},g=[],d=0;d<c.length;d++)H.hasOwnProperty(c[d])&&(g[d]=U.hasOwnProperty(c[d])?U[c[d]](H[c[d]],
+e):H[c[d]]);return g}function A(a,b,c,e,g){return function(d,h){function n(){var a=null;e?a=h:"function"===typeof h&&(p.start=w(),a=h.apply(f,wa(d,k,l)),p.end=w());if(b){H[d]=a;a=d;for(da[a]=!0;(z[a]||[]).length;)z[a].shift()();delete z[a]}p.done=!0}var k=g||this;"function"===typeof d&&(h=d,d=E);b&&(d=d?d.replace(ha,""):"__NONAME__",V.hasOwnProperty(d)&&k.error(q(", reregistered by ",q(" by ",d+" already registered",V[d]),k.attribution),d),V[d]=k.attribution);for(var l=[],m=0;m<a.length;m++)l[m]=
+a[m].replace(ha,"");var p=B[d||"anon"+ ++xa]={depend:l,registered:w(),namespace:k.namespace};d&&ya.hasOwnProperty(d);c?n():ua(l,k.guardFatal(d,n),d);return{decorate:function(a){U[d]=k.guardFatal(d,a)}}}}function ia(a){return function(){var b=Array.prototype.slice.call(arguments);return{execute:A(b,!1,a,!1,this),register:A(b,!0,a,!1,this)}}}function W(a,b){return function(c,e){e||(e=c,c=E);var g=this.attribution;return function(){t.push(b||{attribution:g,name:c,logLevel:a});var d=e.apply(this,arguments);
+t.pop();return d}}}function I(a,b){this.load={js:ea(this,!0),css:ea(this)};G(this,"namespace",b);G(this,"attribution",a)}function ja(){h.body?r.trigger("a-bodyBegin"):setTimeout(ja,20)}function C(a,b){a.className=X(a,b)+" "+b}function X(a,b){return(" "+a.className+" ").split(" "+b+" ").join(" ").replace(/^ | $/g,"")}function ka(a){try{return a()}catch(b){return!1}}function J(){if(K){var a={w:f.innerWidth||n.clientWidth,h:f.innerHeight||n.clientHeight};5<Math.abs(a.w-Y.w)||50<a.h-Y.h?(Y=a,L=4,(a=k.mobile||
+k.tablet?450<a.w&&a.w>a.h:1250<=a.w)?C(n,"a-ws"):n.className=X(n,"a-ws")):0<L&&(L--,la=setTimeout(J,16))}}function za(a){(K=a===E?!K:!!a)&&J()}function Aa(){return K}function ma(){D.forEach(function(a){F(a)})}function na(a,b,c){if(b){a=m(/Chrome/i)&&!m(/Edge/i)&&!m(/OPR/i)&&!a.capabilities.isAmazonApp&&!m(new RegExp(Z+"bwv"+Z+"b"));var e="sw:browser:"+c+":";b.browser&&a&&(D.push(e+"supported"),b.browser.action(e,c));!a&&b.browser&&D.push(e+"unsupported")}}"use strict";var M=Q.now=Q.now||function(){return+new Q},
+w=function(a){return a&&a.now?a.now.bind(a):M}(f.performance),N=w(),ya={},p=f.AmazonUIPageJS||f.P;if(p&&p.when&&p.register){N=[];for(var l=h.currentScript;l;l=l.parentElement)l.id&&N.push(l.id);return p.log("A copy of P has already been loaded on this page.","FATAL",N.join(" "))}var u=f.ue;F();F("aui_build_date:3.21.9-2021-12-28");var R=[],Ba=[],S=!1;var ca=function(){for(var a=setTimeout(ca,0),b=M();Ba.length||R.length;)if(R.shift()(),50<M()-b)return;clearTimeout(a);S=!1};var da={},z={},fa={},T=
+!1;x(f,"beforeunload",function(){T=!0;setTimeout(function(){T=!1},1E4)});var ha=/^prv:/,V={},H={},U={},B={},xa=0,Z=String.fromCharCode(92),t=[],oa=!0,pa=f.onerror;f.onerror=function(a,b,c,e,g){g&&"object"===typeof g||(g=Error(a,b,c),g.columnNumber=e,g.stack=b||c||e?q(Z,g.message,"at "+q(":",b,c,e)):E);var d=t.pop()||{};g.attribution=q(":",g.attribution||d.attribution,d.name);g.logLevel=d.logLevel;g.attribution&&console&&console.log&&console.log([g.logLevel||"ERROR",a,"thrown by",g.attribution].join(" "));
+t=[];pa&&(d=[].slice.call(arguments),d[4]=g,pa.apply(f,d))};I.prototype={logError:function(a,b,c,e){b={message:b,logLevel:c||"ERROR",attribution:q(":",this.attribution,e)};if(f.ueLogError)return f.ueLogError(a||b,a?b:null),!0;console&&console.error&&(console.log(b),console.error(a));return!1},error:function(a,b,c,e){a=Error(q(":",e,a,c));a.attribution=q(":",this.attribution,b);throw a;},guardError:W(),guardFatal:W("FATAL"),guardCurrent:function(a){var b=t[t.length-1];return b?W(b.logLevel,b).call(this,
+a):a},guardTime:function(a){var b=t[t.length-1],c=b&&b.name;return c&&c in B?function(){var b=w(),g=a.apply(this,arguments);B[c].async=(B[c].async||0)+w()-b;return g}:a},log:function(a,b,c){return this.logError(null,a,b,c)},declare:A([],!0,!0,!0),register:A([],!0),execute:A([]),AUI_BUILD_DATE:"3.21.9-2021-12-28",when:ia(),now:ia(!0),trigger:function(a,b,c){var e=M();this.declare(a,{data:b,pageElapsedTime:e-(f.aPageStart||NaN),triggerTime:e});c&&c.instrument&&O.when("prv:a-logTrigger").execute(function(b){b(a)})},
+handleTriggers:function(){this.log("handleTriggers deprecated")},attributeErrors:function(a){return new I(a)},_namespace:function(a,b){return new I(a,b)},setPriority:function(a){oa?oa=!1:this.log("setPriority only accept the first call.")}};var r=G(f,"AmazonUIPageJS",new I);var O=r._namespace("PageJS","AmazonUI");O.declare("prv:p-debug",B);r.declare("p-recorder-events",[]);r.declare("p-recorder-stop",function(){});G(f,"P",r);ja();if(h.addEventListener){var qa;h.addEventListener("DOMContentLoaded",
+qa=function(){r.trigger("a-domready");h.removeEventListener("DOMContentLoaded",qa,!1)},!1)}var n=h.documentElement,aa=function(){var a=["O","ms","Moz","Webkit"],b=h.createElement("div");return{testGradients:function(){return!0},test:function(c){var e=c.charAt(0).toUpperCase()+c.substr(1);c=(a.join(e+" ")+e+" "+c).split(" ");for(e=c.length;e--;)if(""===b.style[c[e]])return!0;return!1},testTransform3d:function(){return!0}}}();p=n.className;var ra=/(^| )a-mobile( |$)/.test(p),sa=/(^| )a-tablet( |$)/.test(p),
+k={audio:function(){return!!h.createElement("audio").canPlayType},video:function(){return!!h.createElement("video").canPlayType},canvas:function(){return!!h.createElement("canvas").getContext},svg:function(){return!!h.createElementNS&&!!h.createElementNS("http://www.w3.org/2000/svg","svg").createSVGRect},offline:function(){return navigator.hasOwnProperty&&navigator.hasOwnProperty("onLine")&&navigator.onLine},dragDrop:function(){return"draggable"in h.createElement("span")},geolocation:function(){return!!navigator.geolocation},
+history:function(){return!(!f.history||!f.history.pushState)},webworker:function(){return!!f.Worker},autofocus:function(){return"autofocus"in h.createElement("input")},inputPlaceholder:function(){return"placeholder"in h.createElement("input")},textareaPlaceholder:function(){return"placeholder"in h.createElement("textarea")},localStorage:function(){return"localStorage"in f&&null!==f.localStorage},orientation:function(){return"orientation"in f},touch:function(){return"ontouchend"in h},gradients:function(){return aa.testGradients()},
+hires:function(){var a=f.devicePixelRatio&&1.5<=f.devicePixelRatio||f.matchMedia&&f.matchMedia("(min-resolution:144dpi)").matches;v("hiRes"+(ra?"Mobile":sa?"Tablet":"Desktop"),a?1:0);return a},transform3d:function(){return aa.testTransform3d()},touchScrolling:function(){return m(/Windowshop|android|OS ([5-9]|[1-9][0-9]+)(_[0-9]{1,2})+ like Mac OS X|SOFTWARE=([5-9]|[1-9][0-9]+)(.[0-9]{1,2})+.*DEVICE=iPhone|Chrome|Silk|Firefox|Trident.+?; Touch/i)},ios:function(){return m(/OS [1-9][0-9]*(_[0-9]*)+ like Mac OS X/i)&&
+!m(/trident|Edge/i)},android:function(){return m(/android.([1-9]|[L-Z])/i)&&!m(/trident|Edge/i)},mobile:function(){return ra},tablet:function(){return sa},rtl:function(){return"rtl"===n.dir}};for(l in k)k.hasOwnProperty(l)&&(k[l]=ka(k[l]));for(var ba="textShadow textStroke boxShadow borderRadius borderImage opacity transform transition".split(" "),P=0;P<ba.length;P++)k[ba[P]]=ka(function(){return aa.test(ba[P])});var K=!0,la=0,Y={w:0,h:0},L=4;J();x(f,"resize",function(){clearTimeout(la);L=4;J()});
+var ta={getItem:function(a){try{return f.localStorage.getItem(a)}catch(b){}},setItem:function(a,b){try{return f.localStorage.setItem(a,b)}catch(c){}}};n.className=X(n,"a-no-js");C(n,"a-js");!m(/OS [1-8](_[0-9]*)+ like Mac OS X/i)||f.navigator.standalone||m(/safari/i)||C(n,"a-ember");p=[];for(l in k)k.hasOwnProperty(l)&&k[l]&&p.push("a-"+l.replace(/([A-Z])/g,function(a){return"-"+a.toLowerCase()}));C(n,p.join(" "));n.setAttribute("data-aui-build-date","3.21.9-2021-12-28");r.register("p-detect",function(){return{capabilities:k,
+localStorage:k.localStorage&&ta,toggleResponsiveGrid:za,responsiveGridEnabled:Aa}});m(/UCBrowser/i)||k.localStorage&&C(n,ta.getItem("a-font-class"));r.declare("a-event-revised-handling",!1);try{var y=navigator.serviceWorker}catch(a){F("sw:nav_err")}y&&(x(y,"message",function(a){a&&a.data&&v(a.data.k,a.data.v)}),y.controller&&y.controller.postMessage("MSG-RDY"));var D=[];(function(a){var b=a.reg,c=a.unreg;y&&y.getRegistrations?(O.when("A").execute(function(a){na(a,c,"unregister")}),x(f,"load",function(){O.when("A").execute(function(a){na(a,
+b,"register");ma()})})):(b&&b.browser&&D.push("sw:browser:register:unsupported"),c&&c.browser&&D.push("sw:browser:unregister:unsupported"),ma())})({reg:{},unreg:{}});r.declare("a-fix-event-off",!1);v("pagejs:pkgExecTime",w()-N)})(window,document,Date);
+  (window.AmazonUIPageJS ? AmazonUIPageJS : P).load.js('https://images-na.ssl-images-amazon.com/images/I/61XKxrBtDVL._RC|11Y+5x+kkTL.js,51106gSDnJL.js,11yKORv-GTL.js,11giXtZCwVL.js,01+z+uIeJ-L.js,01VRMV3FBdL.js,21SDJtBU-PL.js,012FVc3131L.js,11rRjDLdAVL.js,51H19hJRYrL.js,11kWu3cNjYL.js,11tMohjWmVL.js,11OREnu1epL.js,11wcWdhrnDL.js,21ssiLNIZvL.js,0190vxtlzcL.js,51+N26vFcBL.js,01JYHc2oIlL.js,31R9m8rig5L.js,01ezj5Rkz1L.js,11+RxVdhNcL.js,31o2NGTXThL.js,01rpauTep4L.js,01KFkXJxMTL.js_.js?AUIClients/AmazonUI');
+  (window.AmazonUIPageJS ? AmazonUIPageJS : P).load.js('https://images-na.ssl-images-amazon.com/images/I/61CNp4AIQhL.js?AUIClients/DeXWebsiteAUIAssets');
+</script>
+
+        <div class="content-section">
+            
+            <div class="docs">
+    <!-- jQuery (MIT license)-->
+<script src="https://amzndevresources.com/jekyll/js/jquery-3.6.0.min.js"></script>
+
+   <!-- Bootstrap 4.4 css -->
+      <link rel="stylesheet" href="https://amzndevresources.com/jekyll/css/bootstrap4.css" />
+
+       <!--use when you want to serve non-cached file-->
+      <link rel="stylesheet" href="https://devportal-reference-docs.s3-us-west-1.amazonaws.com/jekyll/css/styleoverrides.css" />
+
+      <!-- <link rel="stylesheet" href="https://amzndevresources.com/jekyll/css/styleoverrides.css"/> -->
+      <link rel="stylesheet" href="https://amzndevresources.com/jekyll/css/popovers.css" />
+     <!-- Navgoco -->
+     <script src="https://amzndevresources.com/jekyll/js/jquery.navgoco.min.js"></script>
+      <!-- jQuery cookie (MIT license)-->
+      <script type="text/javascript" src="https://amzndevresources.com/jekyll/js/jquery.cookie.js"></script>
+      <!-- Bootstrap (MIT license)-->
+
+      <script src="https://amzndevresources.com/jekyll/js/bootstrap.4.4.1.bundle.min.js"></script>
+      <!-- Anchor JS (MIT license)-->
+      <script src="https://amzndevresources.com/jekyll/js/anchor.min.js"></script>
+      <!-- Initialization scripts -->
+       <script src="https://amzndevresources.com/jekyll/js/initialization_scripts.js"></script>
+      <!-- Tech doc css fixes now incorporated into stylesheet -->
+
+<div class="container">
+
+  
+            <!-- sidebar -->
+            <div id="sidebar">
+
+
+
+
+<!-- sidebar_hide_weblab -->
+
+
+
+<div class="mydocsidebar">
+   <div id="search-searchbar"></div>
+   
+
+       
+       <script src="https://d3b16pg7hqg2cy.cloudfront.net/alexa/jekyll/js/new-nav/CoveoJsSearch.min.js"></script>
+<link rel="stylesheet" href="https://d3b16pg7hqg2cy.cloudfront.net/alexa/jekyll/js/new-nav/CoveoFullSearch.css" />
+<link rel="stylesheet" href="https://devportal-reference-docs.s3-us-west-1.amazonaws.com/jekyll/css/search.css" />
+
+       <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchBoxRoot = document.getElementById("searchbox");
+        const organizationId = "amazoncomproduction9q1by2xb";
+        const accessToken = "xx42d66989-6d5b-4bd4-bc36-d3b3a04aa40f";
+        Coveo.SearchEndpoint.configureCloudV2Endpoint(organizationId, accessToken);
+        Coveo.initSearchbox(searchBoxRoot, "https://developer.amazon.com/docs/appstore/search.html");
+    });
+</script>
+
+<div id="searchbox" class="CoveoSearchInterface" data-enable-history="true" data-results-per-page="80" data-excerpt-length="120" data-enable-duplicate-filtering="true" data-pipeline="AppstoreTechDocs" style="display:none">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let root = document.querySelector("#searchbox");
+            // event handler to group results by “source”
+            Coveo.$$(root).on("preprocessResults", function (e, args) {
+                // Split the "title suffix" to be the "category" because we don't have anything else in yet in the index.
+                let results = args.results.results.map((r) => {
+                    const title = r.title;
+                    if (title.includes("|")) {
+                        // set the category
+                        r.raw.category = title.split("|")[1].trim();
+                        r.title = title.split("|")[0].trim();
+                    } else {
+                        r.raw.category = "YouTube";
+                    }
+                    return r;
+                });
+                // sort results per category
+                results = results.sort((a, b) => {
+                    return a.raw.category.localeCompare(b.raw.category);
+                });
+                // Set a category Label for the first results of the category.
+                // Keep only 3 items per category.
+                let lastCategory = "";
+                let categoryCount = 0;
+                results.forEach((r, idx) => {
+                    if (lastCategory !== r.raw.category) {
+                        lastCategory = r.raw.category;
+                        categoryCount = 0;
+                        r.raw.categoryLabel = r.raw.category;
+                    }
+                    categoryCount++;
+                    if (categoryCount > 3) {
+                        // we already have 3 items for this category
+                        r.toDelete = true;
+                    }
+                });
+                // clear out the results marked for deletion
+                results = results.filter((r) => !r.toDelete);
+                args.results.results = results;
+            });
+        });
+
+        $(document).ready(function () {
+            $(".inline").click(function () {
+                $(".coveo-show-if-no-results").hide();
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            $("#searchbox .magic-box input").attr("placeholder", "Search Appstore Docs (BETA)");
+        });
+    </script>
+    <div class="CoveoAnalytics" data-anonymous="true" data-search-hub="appstore-dropdown-search"></div>
+    <div class="coveo-search-section">
+        <div class="CoveoSearchbox" data-enable-omnibox="true" data-enable-query-syntax="true" data-search-as-you-type-delay="300">
+            <div class="CoveoOmniboxResultList" data-layout="list">
+                <div class="coveo-show-if-results">
+                    <script class="result-template" type="text/x-underscore">
+                          <div>
+                            <% if (raw.categoryLabel ) { %> <div class="category-label CoveoFieldValue" data-field="@categoryLabel"></div>  <% } %>
+                            <div class="co-highlight">
+                                <div> <a class='CoveoResultLink'></a> </div>
+                                <div class='CoveoExcerpt'></div>
+                                <div class="CoveoFieldValue CoveoCrumb" data-field="@crumb"></div>
+                            </div>
+                        </div>
+                    </script>
+                </div>
+                <div class="coveo-show-if-no-results">
+                    <p>No results found</p>
+                    <div class="co-empty">Try a different or more specific query.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var searchInterface = document.querySelector("#searchbox");
+        Coveo.$$(searchInterface).on("populateOmnibox", function (e, populateOmniboxObject) {
+            var linkElement = document.createElement("a");
+            var query = populateOmniboxObject.completeQueryExpression.word;
+            if (!query) {
+                return;
+            }
+            linkElement.href = "https://developer.amazon.com/docs/appstore/search.html#q=" + encodeURIComponent(query);
+            linkElement.text = 'See more results for "' + query + '"';
+            linkElement.className = "coveo-omnibox-selectable co-more-results";
+            linkElement["no-text-suggestion"] = true;
+            linkElement.addEventListener("keyboardSelect", function () {
+                linkElement.click();
+            });
+
+            populateOmniboxObject.rows.push({ element: linkElement, zIndex: 0 });
+        });
+    });
+</script>
+
+       
+
+   
+   
+   <div class="productTitle">GameMaker Basics</div>
+   <p class="external">
+      <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+   </p>
+   
+   
+   
+   <ul id="docnavsidebar" class="docnav">
+      
+      
+      
+      <li class="level1 folderTitle">
+         <a class="subfoldersTitle" href="#">GameMaker Basics</a>
+         
+         
+         <ul>
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/drawing-sprites.html">Drawing Sprites</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/hitboxes-hurtboxes.html">Hitboxes and Hurtboxes</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/juicing-your-movements.html">Juicing Your Movements</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/intro-shaders.html">Intro to Shaders</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/object-orchestration.html">Object Orchestration</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/screen-shake.html">Screen Shake</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/timers.html">Timers</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/simple-ai.html">Simple AI</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items open"><a href="../gamemaker/input-replay-system.html">Input Replay System</a></li>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <li class="level1items"><a href="../gamemaker/debugging.html">Debugging</a></li>
+            
+            
+            
+            
+            
+            
+         </ul>
+         
+         
+      </li>
+   </ul>
+   <hr class="resourceSeparator" />
+   
+   <div class="relatedResources"></div>
+   <ul id="entrypages">
+      
+      
+   </ul>
+</div>
+<script>
+   $("li.open").parents('li').toggleClass("open");
+</script>
+
+
+
+
+
+
+            </div>
+
+
+
+            <!-- main area -->
+            <div class="mainColumn">
+
+<div id="content">
+                <h1>Setting Up an Input Replay System</h1>
+
+                
+
+                
+                    
+                    
+                    
+
+                      <p><em><a href="https://developer.amazon.com/blogs/appstore/post/3bb65890-7230-431f-836e-35455ae996bf/easy-input-replay-system-in-gamemaker-studio-2">Written in December 2017</a> by Alejandro Hitti, a video game programmer and designer from Venezuela.</em></p>
+
+<p>GameMaker is an engine that works with frames instead of delta time and thanks to this advantage, we can trivially record the player inputs and match them with a frame number. We can then simulate replaying the input and create a replay system. There are many uses for this kind of system, such as creating cutscenes, automating tests for your game to run on a loop, acting as tutorials, ghost replaying, etc.</p>
+
+<p>In this post, I will go over the basics of setting up this system and leave you with ideas on how to integrate it in your game and expand it.</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image1-inputsystem-alejandro._TTH_.gif" alt="" /><figcaption>An example of the system being used for tutorials in HackyZack</figcaption></figure>
+
+<ul id="markdown-toc">
+  <li><a href="#set-up" id="markdown-toc-set-up">Set Up</a></li>
+  <li><a href="#input-recorder" id="markdown-toc-input-recorder">Input Recorder</a></li>
+  <li><a href="#part-one" id="markdown-toc-part-one">Part One</a></li>
+  <li><a href="#part-two" id="markdown-toc-part-two">Part Two</a></li>
+  <li><a href="#part-three" id="markdown-toc-part-three">Part Three</a></li>
+  <li><a href="#part-four" id="markdown-toc-part-four">Part Four</a></li>
+  <li><a href="#expanding-the-system" id="markdown-toc-expanding-the-system">Expanding the System</a></li>
+  <li><a href="#demo" id="markdown-toc-demo">Demo</a></li>
+</ul>
+
+<h3 id="set-up">Set Up</h3>
+
+<p><a href="https://s3-us-west-1.amazonaws.com/devportal-reference-docs/gamemaker/InputReplay_Assets.rar">Here's a link</a> to the assets I used for the demo if you want to follow along. The finished demo is also available for download at the end of the article.</p>
+
+<p>We need a scene to test the input controller, so let's make a little one. We need to create three objects: <strong>oPlayer</strong>, <strong>oPot</strong>, and <strong>oWall</strong>.</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image2-inputsystem-alejandro._TTH_.png" alt="" /></figure>
+
+<p>The wall and the pot objects will be empty as they are used for collision and for drawing. Set the sprites to anything you want, or use the assets provided. As for the player, we need to create the four directional animations. Last, we add the tileset sprite, and create a tileset object using it.</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image3-inputsystem-alejandro._TTH_.png" alt="" /></figure>
+
+<p>As for the player object, we will create a simple top-down controller for it. In the <strong>Create Event</strong>, let's declare some variables:</p>
+
+<div id="c1">
+
+  <p><button id="c1_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c1_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>/// Create Event
+_kLeft   = false;
+_kRight  = false;
+_kUp     = false;
+_kDown   = false;
+_kAction = false;
+
+image_speed = 0.5;
+</code></pre>
+
+</div>
+
+<p>We will use these variables to store the input and set the animation speed to half. Next, in the <strong>Begin Step</strong> event, we will listen to the input. In a full game, it is a better idea to get the input from an input manager, not the player object itself, but that's outside of the scope of this article, so we will go with this solution.</p>
+
+<div id="c2">
+
+  <p><button id="c2_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c2_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Begin Step Event
+_kLeft   = keyboard_check(vk_left);
+_kRight  = keyboard_check(vk_right);
+_kUp     = keyboard_check(vk_up);
+_kDown   = keyboard_check(vk_down);
+_kAction = keyboard_check_pressed(vk_space);
+</code></pre>
+
+</div>
+
+<p>Last, in the <strong>Step Event</strong> we are going to move the character, set the correct sprite, check for collision with walls, and place a Pot when we hit the spacebar (action key). This is what it looks like:</p>
+
+<div id="c3">
+
+  <p><button id="c3_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c3_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Step Event
+
+var moveSpeed = 4;
+
+// Movement in all directions. Accepts multiple inputs.
+// NOTE: Moves faster on diagonals, but that's an easy fix.
+if (_kLeft &amp;&amp; !place_meeting(x - moveSpeed, y, oWall))
+{
+    x -= moveSpeed;
+    sprite_index = sPlayerLeft;
+    image_speed = 0.5;
+}
+
+if (_kRight &amp;&amp; !place_meeting(x + moveSpeed, y, oWall))
+{
+    x += moveSpeed;
+    sprite_index = sPlayerRight;
+    image_speed = 0.5;
+}
+
+if (_kUp &amp;&amp; !place_meeting(x, y - moveSpeed, oWall))
+{
+    y -= moveSpeed;
+    sprite_index = sPlayerUp;
+    image_speed = 0.5;
+}
+
+if (_kDown &amp;&amp; !place_meeting(x, y + moveSpeed, oWall))
+{
+    y += moveSpeed;
+    sprite_index = sPlayerDown;
+    image_speed = 0.5;
+}
+
+// Go back to the idle position in the animation and stop it when there are no inputs
+if (!_kLeft &amp;&amp; !_kRight &amp;&amp; !_kDown &amp;&amp; !_kUp)
+{
+    image_index = 1;
+    image_speed = 0;
+}
+
+// Place a pot when the action key is pressed
+if (_kAction)
+    instance_create_layer(x, y, &quot;Pots&quot;, oPot);
+</code></pre>
+
+</div>
+
+<p>With that out of the way, we can create a little play area to test our code. This is the one I came up with:</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image4-inputsystem-alejandro._TTH_.png" alt="" /></figure>
+
+<p>And just place wall objects where needed.</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image5-inputsystem-alejandro._TTH_.png" alt="" /></figure>
+
+<p>If we run the game now, we should be able to have a character moving around, playing the correct animations, and colliding with walls. Also, if you press the spacebar, you will drop a pot under the character.</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image6-inputsystem-alejandro._TTH_.gif" alt="" /></figure>
+
+<h3 id="input-recorder">Input Recorder</h3>
+
+<p>Create a new object called <strong>oInputRecorder</strong> and turn on the <strong>Persistent</strong> flag. Next, we will make sure there's only one copy of this object ever, so at the beginning of the <strong>Create Event</strong> we will call this script <strong>MakeUnique</strong>.</p>
+
+<div id="c4">
+
+  <p><button id="c4_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c4_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// MakeUnique Script
+
+if (instance_number(object_index) &gt; 1)
+    instance_destroy();
+</code></pre>
+
+</div>
+
+<p>It's a pretty simple script that ensures there's only one copy of the object it's called on. It works like the singleton pattern, but it's not quite the same, so I named it differently. Here what the Create Event looks like, and I will explain what each of the variables do below.</p>
+
+<div id="c5">
+
+  <p><button id="c5_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c5_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Create Event
+
+// Only one copy of this should be running
+MakeUnique();
+
+// Keys Enum
+enum eKey
+{
+    LeftPressed = 0,
+    RightPressed,
+    UpPressed,
+    DownPressed,
+    ActionPressed,
+
+    LeftReleased,
+    RightReleased,
+    UpReleased,
+    DownReleased,
+
+    NUM_KEYS
+}
+
+// Variables
+_fileName = &quot;Recording_&quot; + string(room_get_name(room)) + &quot;.txt&quot;;
+
+// Check if currently recording or playing
+_isRecording = false;
+_isPlaying   = false;
+
+// Variables to keep track of the frames
+_frame = 0;
+_index = 0;
+
+// Arrays to store the keys to record, and the recorded values and frames
+_input         = array_create(eKey.NUM_KEYS, false);
+_inputSequence = [0, 0];
+
+// Hotkeys to start/stop recording and playback
+_kRecord = 0;
+_kPlay   = 0;
+</code></pre>
+
+</div>
+
+<p>There's a lot to digest here, but nothing is too complicated. First, we call the <strong>MakeUnique</strong> script as we discussed before. Next, we declare an enumerator with each of the key events we want to record. Note it is not keys, but key events, such as pressed and released. For this example, we will keep track of the four directional arrows (both on pressed and released) and the spacebar for the action, but we only need this one on pressed. The last element in the enumerator will be useful later for loops as it automatically holds the number of key events in the enum.</p>
+
+<p>We then choose a <strong>_filename</strong> where we will store our recording. I made the name include the room name so it is unique per room, but you can pick anything here. This text file will be saved by default in your AppData folder. Later we have two of boolean variables (<strong>_isPlaying</strong> and <strong>_isRecording</strong>) that will check if we are currently recording input, or playing back our recorded input. The <strong>_frame variable</strong> will store the frame at which the key events happen and the <strong>_index</strong> is the position in the array where it is stored. These don't match because it is possible to have multiple inputs in the same frame. The <strong>_input</strong> array stores the state of each key. We are using an array to make the next section easier to code and make adding new key events straightforward. The other array is <strong>_inputSequence</strong>, which is a 2D array that pairs a key event with the frame when it happened. Last, we have <strong>_kRecord</strong> and <strong>_kPlay</strong>, which are used to check the state of the hotkeys to activate recording and playback.</p>
+
+<p>Next, we need to check our inputs in the <strong>Begin Step</strong> event. As I mentioned before, in an actual game it is advisable to get the input from your input manager, but we will get it directly to keep it simple. We will store all the inputs we intend to record (the ones in the enumerator) inside of the <strong>_input</strong> array, and the rest in their respective variables. This is what it looks like:</p>
+
+<div id="c6">
+
+  <p><button id="c6_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c6_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Begin Step Event
+
+// Keys we want to record
+_input[eKey.LeftPressed]   = keyboard_check_pressed(vk_left);
+_input[eKey.RightPressed]  = keyboard_check_pressed(vk_right);
+_input[eKey.UpPressed]     = keyboard_check_pressed(vk_up);
+_input[eKey.DownPressed]   = keyboard_check_pressed(vk_down);
+_input[eKey.ActionPressed] = keyboard_check_pressed(vk_space);
+
+_input[eKey.LeftReleased]  = keyboard_check_released(vk_left);
+_input[eKey.RightReleased] = keyboard_check_released(vk_right);
+_input[eKey.UpReleased]    = keyboard_check_released(vk_up);
+_input[eKey.DownReleased]  = keyboard_check_released(vk_down);
+
+// Keys we don't want to record
+_kRecord = keyboard_check_pressed(ord(&quot;Q&quot;));
+_kPlay   = keyboard_check_pressed(ord(&quot;P&quot;));
+</code></pre>
+
+</div>
+
+<p>Most of the code related to the input recording system lies within the <strong>Step Event</strong>, so I will break it up into four parts to explain each bit individually, but it all goes in the same script. If you are confused, make sure to reference the demo.</p>
+
+<h3 id="part-one">Part One</h3>
+
+<p>First, we need to check if the record hotkey was pressed and that we are not currently playing a recording. Then, we check if the <strong>_isRecording</strong> flag is on, which means that we are trying to stop the recording. Hence, we will write what we have recorded so far into a file. We then flip the value of the <strong>_isRecording</strong> variable.</p>
+
+<div id="c7">
+
+  <p><button id="c7_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c7_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Step Event Part 1
+
+// Turn recording on if not currently on playback
+if (_kRecord &amp;&amp; !_isPlaying)
+{
+    // Save the recording
+    if (_isRecording)
+        WriteInputRecording(_fileName);
+
+    _isRecording = !_isRecording;
+}
+</code></pre>
+
+</div>
+
+<p><strong>WriteInputRecording</strong> is a script that writes what we have stored in <strong>_inputSequence</strong> to a file. The script is quite simple: first, we open the file with the name provided to the script. We then iterate through every element in the sequence and write the frame number next to the key event. We then write a new line and keep going. Once the loop is over, we set the <strong>_inputSequence</strong> to zero to delete the data structure and clean up after ourselves. Last, we close the text file. Note I am taking advantage of how GameMaker works where we can access variables in the scope where the script is called. If you wish to call this script from another object, pass the <strong>_inputSequence</strong> as an argument.</p>
+
+<div id="c8">
+
+  <p><button id="c8_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c8_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// WriteInputRecording Script
+
+var file = file_text_open_write(argument0);
+
+for (var i = 0; i &lt; array_height_2d(_inputSequence); ++i)
+{
+    file_text_write_real(file, _inputSequence[i, 0]);
+    file_text_write_real(file, _inputSequence[i, 1]);
+    file_text_writeln(file);
+}
+
+_inputSequence = 0;
+
+file_text_close(file);
+</code></pre>
+
+</div>
+
+<h3 id="part-two">Part Two</h3>
+
+<p>For part two, we will check if we are currently recording. If we are, we will go through every key event checking if it's been triggered. When we find a match, we store the frame and the event number, advancing the index. We only advance the frame after this loop, which allows us to store multiple inputs per frame. One thing to note is that for values we want to check if they are down (such as the directional arrows) we are only storing the frame where they are first down, and when we release them. We could store each frame they are down, but this way we are making the save file a lot smaller.</p>
+
+<div id="c9">
+
+  <p><button id="c9_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c9_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Step Event Part 2
+
+// Fill out array while the game is recording
+if (_isRecording)
+{
+    // Iterate through each key and store the input and frame. Accepts multiple inputs at once.
+    for (var i = 0; i &lt; eKey.NUM_KEYS; ++i)
+    {
+        if (_input[i])
+        {
+            _inputSequence[_index, 0] = _frame;
+            _inputSequence[_index, 1] = i;
+            ++_index;
+        }
+    }
+
+    ++_frame;
+}
+</code></pre>
+
+</div>
+
+<p>If we play the game now, we can press Q and record some movement and pot placing. Once we are done, we press Q again to stop recording and store the information in the file which should look something like this:</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image7-inputsystem-alejandro._TTH_.png" alt="" /></figure>
+
+<h3 id="part-three">Part Three</h3>
+
+<p>If you got everything working until this point, we can start working on the playback functionality. The third part of the <strong>Step Event</strong> involves checking the playback hotkey (if not already recording), and if the flag is on, then we read the file and store all the information in our <strong>_inputSequence</strong> array. This is so we only have to open and read the file once since opening files is an expensive operation.</p>
+
+<div id="c10">
+
+  <p><button id="c10_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c10_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Step Event Part 3
+
+// If the play hotkey is pressed and we are not recording, start playing
+if (_kPlay &amp;&amp; !_isRecording)
+{
+    _isPlaying = !_isPlaying;
+
+    // Load up all the recording sequence from the file into memory
+    if (_isPlaying)
+        ReadInputRecording(_fileName);
+}
+</code></pre>
+
+</div>
+
+<p>As you can see, we have another script here to read the file. These are the contents of that script:</p>
+
+<div id="c11">
+
+  <p><button id="c11_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c11_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// ReadInputRecording
+
+var file = file_text_open_read(argument0);
+
+var i = 0;
+
+while (!file_text_eof(file))
+{
+    _inputSequence[i, 0] = file_text_read_real(file);
+    _inputSequence[i, 1] = file_text_read_real(file);
+    file_text_readln(file);
+
+    ++i;
+}
+
+file_text_close(file);
+</code></pre>
+
+</div>
+
+<p>It's the complementary script to the WriteInputRecording one, where we instead open the file and store all the values in the file into our array. We then close the file and prepare to run the key events.</p>
+
+<h3 id="part-four">Part Four</h3>
+
+<p>In the fourth and last <strong>Step Event</strong> section, we will simply check if the <strong>_isPlaying</strong> flag is active, and calling a script to run the key events if it is.</p>
+
+<div id="c12">
+
+  <p><button id="c12_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c12_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Step Event Part 4
+
+// Runs every frame to play the sequence when needed
+if (_isPlaying)
+    PlayInputRecording();
+</code></pre>
+
+</div>
+
+<p>Nothing much to see here, so let's get into the <strong>PlayInputRecording</strong> script.</p>
+
+<div id="c13">
+
+  <p><button id="c13_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c13_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// PlayInputRecording Script
+
+var player = instance_find(oPlayer, 0);
+
+if (player != noone)
+{
+    player._kAction = false;
+
+    while (_index &lt; array_height_2d(_inputSequence) &amp;&amp; _inputSequence[_index, 0] == _frame)
+    {
+        switch (_inputSequence[_index, 1])
+        {
+            case eKey.LeftPressed:   player._kLeft   = true; break;
+            case eKey.RightPressed:  player._kRight  = true; break;
+            case eKey.UpPressed:     player._kUp     = true; break;
+            case eKey.DownPressed:   player._kDown   = true; break;
+            case eKey.ActionPressed: player._kAction = true; break;
+
+            case eKey.LeftReleased:  player._kLeft  = false; break;
+            case eKey.RightReleased: player._kRight = false; break;
+            case eKey.UpReleased:    player._kUp    = false; break;
+            case eKey.DownReleased:  player._kDown  = false; break;
+        }
+
+        ++_index;
+    }
+
+    ++_frame;
+}
+</code></pre>
+
+</div>
+
+<p>We first get the object we want to hijack the input from (in this case the player) and we get the instance. If you are using an input manager, you should get that object instead. We then set all the key events that are triggered on pressed only (such as our action) and set them to false. We then iterate through the <strong>_inputSequence</strong> array and set the variables inside our player to the appropriate values, keeping track of our index and current frame. As you may have guessed, we also need to make a slight modification to our player <strong>Begin Step</strong> event, to prevent it from updating the values of its variables. We surround the input check section like this:</p>
+
+<div id="c14">
+
+  <p><button id="c14_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c14_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Player Modified Begin Step
+
+var recorder = instance_find(oInputRecorder, 0);
+
+if (recorder != noone &amp;&amp; !recorder._isPlaying)
+{
+    _kLeft   = keyboard_check(vk_left);
+    _kRight  = keyboard_check(vk_right);
+    _kUp     = keyboard_check(vk_up);
+    _kDown   = keyboard_check(vk_down);
+    _kAction = keyboard_check_pressed(vk_space);
+}
+</code></pre>
+
+</div>
+
+<p>And that should be it. All we need to do now to test our system is:</p>
+
+<ol>
+  <li>
+    <p>Press Q to start recording.</p>
+  </li>
+  <li>
+    <p>Perform a series of movements and pot placing.</p>
+  </li>
+  <li>
+    <p>Press Q again to stop recording.</p>
+  </li>
+  <li>
+    <p>Press F5 to restart the level to its initial state.</p>
+  </li>
+  <li>
+    <p>Press P to start the playback.</p>
+  </li>
+</ol>
+
+<p>You should see the player object perform the exact same moves recorded previously. To make debugging easier, I added some <strong>Draw GUI</strong> code that displays when I'm recording or playing back the sequence.</p>
+
+<div id="c15">
+
+  <p><button id="c15_copy-button" type="button" class="btn btn-default btn-sm copy-button" data-clipboard-action="copy">
+<i class="fa fa-files-o" aria-hidden="true"></i> Copy code </button>
+
+<span id="c15_copy-button_tooltip" class="tooltip-for-copy-button">Copied to clipboard.</span></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+
+  <script src="https://m.media-amazon.com/images/G/01/mobile-apps/devportal/clipboardcopy._CB480009070_.js"></script>
+
+  <pre><code>// Draw GUI Event
+
+var color = c_white;
+draw_text_color(5, 5, &quot;Press Q to start/stop recording&quot;, color, color, color, color, 1.0);
+draw_text_color(5, 25, &quot;Press P to start/stop playing&quot;, color, color, color, color, 1.0);
+draw_text_color(5, 45, &quot;Press F5 to restart the room&quot;, color, color, color, color, 1.0);
+
+var text = &quot;&quot;;
+
+if (_isRecording)
+{
+    color = c_red;
+    text = &quot;Recording&quot;;
+}
+
+if (_isPlaying)
+{
+    color = c_yellow;
+    text = &quot;Playing&quot;;
+}
+
+draw_text_color(5, 65, text, color, color, color, color, 1.0);
+</code></pre>
+
+</div>
+
+<p>Here is our final scene.</p>
+
+<figure><img style="max-width: 80%" class="docimage " src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/emily-gamemaker/image8-inputsystem-alejandro._TTH_.gif" alt="" /></figure>
+
+<h3 id="expanding-the-system">Expanding the System</h3>
+
+<p>The system is very basic as it is now, but it's easy to add more to it. First, if you want to add more inputs to record, you will need to add them to the enum in the <strong>Create Event</strong>, update its value in the <strong>Begin Step</strong> either by getting the value from the input manager, or by calling the correct input function from GameMaker. Last, set the value to the appropriate value in the <strong>PlayInputRecording</strong> script. Remember that variables that only trigger once (On Pressed) should be set to false before the while loop.</p>
+
+<p>Another way to expand the system would be to add mouse events, which would probably include the mouse coordinates at the time of the mouse press event. This system also works for controller inputs with no modifications, by calling the right functions.</p>
+
+<h3 id="demo">Demo</h3>
+
+<p>Download the demo and project files <a href="https://s3-us-west-1.amazonaws.com/devportal-reference-docs/gamemaker/InputReplaySystem.zip">here</a>.</p>
+
+
+                      
+
+                      
+                    </div>
+
+            </div>
+        </div><!--/.container-->
+    </div><!--/.page-container-->
+    <style>
+      .dpFooter .dpfNav {
+          min-height: 220px;
+      }
+    </style>
+
+<link rel="stylesheet" href="https://devportal-reference-docs.s3-us-west-1.amazonaws.com/jekyll/css/search-fullpage.css" />
+<link rel="stylesheet" href="https://devportal-reference-docs.s3-us-west-1.amazonaws.com/jekyll/js/unload.js" />
+        </div>
+        
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+        
+
+
+
+
+<section class="dp-content-slot dp-content-pixel-tracker-slot">
+  <div class="dp-content-slot-inner container">
+    
+  </div>
+</section>
+        
+
+
+
+
+
+
+
+<footer class='dpFooter'>
+    <a class='dpfBackToTopLink' href='#'>Back to top</a>
+
+    <nav class="dpfNav accordion clearfix">
+        <div class='dpfWidth'>
+            <div class='dpfnHideRightMargin'>
+                
+                    
+                        
+                        <div class='dpfnColWrap'>
+                    
+                        <div class="dpfnCol">
+                            
+                                <div class="dpfnGroup accrItem">
+                                    <div class='dpIconArrow accrHandle'></div>
+                                    
+                                        
+                                        
+                                            <h3>Resources</h3>
+                                        
+                                    
+                                    <ul>
+                                        
+                                            <li><a href="/apps-and-games/blogs">Amazon Developer Blog</a></li>
+                                        
+                                            <li><a href="/documentation">Technical Documentation</a></li>
+                                        
+                                            <li><a href="/apps-and-games/devhuddle/">Developer Huddle</a></li>
+                                        
+                                            <li><a href="/docs/gamemaker/overview.html">GameMaker Tutorials</a></li>
+                                        
+                                    </ul>
+                                </div>
+                            
+                        </div>
+                    
+                
+                    
+                        <div class="dpfnCol">
+                            
+                                <div class="dpfnGroup accrItem">
+                                    <div class='dpIconArrow accrHandle'></div>
+                                    
+                                        
+                                        
+                                            <h3>Testing Tools</h3>
+                                        
+                                    
+                                    <ul>
+                                        
+                                            <li><a href="/apps-and-games/test">App Testing Tools</a></li>
+                                        
+                                            <li><a href="/app-testing-service/tya/dashboard.html">App Testing Service</a></li>
+                                        
+                                            <li><a href="/docs/app-testing/live-app-testing-getting-started.html">Live App Testing</a></li>
+                                        
+                                            <li><a href="/docs/html5-web-apps/webapp-app-tester.html">Amazon Web App Tester</a></li>
+                                        
+                                    </ul>
+                                </div>
+                            
+                        </div>
+                    
+                        
+                        </div>
+                    
+                
+                    
+                        
+                        <div class='dpfnColWrap'>
+                    
+                        <div class="dpfnCol">
+                            
+                                <div class="dpfnGroup accrItem">
+                                    <div class='dpIconArrow accrHandle'></div>
+                                    
+                                        
+                                            <h3><a href="/apps-and-games/services-and-apis">Services & APIs</a></h3>
+                                        
+                                        
+                                    
+                                    <ul>
+                                        
+                                            <li><a href="/apps-and-games/login-with-amazon">Login with Amazon</a></li>
+                                        
+                                            <li><a href="/docs/in-app-purchasing/iap-overview.html ">In-App Purchasing</a></li>
+                                        
+                                            <li><a href="https://developer.amazon.com/frustration-free-setup">Frustration-Free Setup</a></li>
+                                        
+                                            <li><a href="/docs/app-submission-api/overview.html">App Submission API</a></li>
+                                        
+                                            <li><a href="/docs/app-submission/release-updates-in-staged-rollouts.html">Staged Rollouts</a></li>
+                                        
+                                            <li><a href="/docs/reports-promo/promo-overview.html ">Developer Promotions Console</a></li>
+                                        
+                                            <li><a href="/apps-and-games/incentives-api">Amazon Incentives API</a></li>
+                                        
+                                            <li><a href="/docs/adm/overview.html">Device Messaging</a></li>
+                                        
+                                            <li><a href="/apps-and-games/merch">Merch by Amazon</a></li>
+                                        
+                                            <li><a href="/apps-and-games/leaderboardsandtournaments">Leaderboard & Tournaments</a></li>
+                                        
+                                    </ul>
+                                </div>
+                            
+                        </div>
+                    
+                
+                    
+                        <div class="dpfnCol">
+                            
+                                <div class="dpfnGroup accrItem">
+                                    <div class='dpIconArrow accrHandle'></div>
+                                    
+                                        
+                                        
+                                            <h3>Support</h3>
+                                        
+                                    
+                                    <ul>
+                                        
+                                            <li><a href="/support">Amazon Developer Support</a></li>
+                                        
+                                            <li><a href="/docs/app-submission/faq-landing.html">FAQs</a></li>
+                                        
+                                            <li><a href="https://forums.developer.amazon.com/">Amazon Developer Forums</a></li>
+                                        
+                                            <li><a href="/support/contact-us">Contact Us</a></li>
+                                        
+                                    </ul>
+                                </div>
+                            
+                                <div class="dpfnGroup accrItem">
+                                    <div class='dpIconArrow accrHandle'></div>
+                                    
+                                        
+                                        
+                                            <h3>Legal</h3>
+                                        
+                                    
+                                    <ul>
+                                        
+                                            <li><a href="/terms-and-agreements">Terms & Agreements</a></li>
+                                        
+                                    </ul>
+                                </div>
+                            
+                        </div>
+                    
+                        
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </nav>
+
+    <div class="dpfSocialLocal clearfix">
+        <div class='dpfWidth'>
+            <div class='dpfLocale'>
+                
+
+
+
+<nav class="dpLangSwitcher dpsfFlyout">
+    <span class='dplsTitle'>Language</span>
+    <div class='dplsSwitch'>
+        <span class="dplsCurrent dpsfFlyoutCurrent">
+            <i class='dpsfIcon dpsfIconGlobe'></i>
+            English
+        </span>
+        <div class='dplsOptionsWrap dpsfFlyoutWrap'>
+            <ul class="dplsOptions dpsfFlyoutContent">
+                
+                    
+                    
+                        
+                    
+                    <li class="dplsOption dpsfFlyoutItem dplsOptionActive">
+                        <a data-locale="en_US" href="/docs/gamemaker/input-replay-system.html">
+                            English
+                        </a>
+                    </li>
+                
+                    
+                    
+                    <li class="dplsOption dpsfFlyoutItem ">
+                        <a data-locale="zh_CN" href="/zh/docs/gamemaker/input-replay-system.html">
+                            Chinese (中文)
+                        </a>
+                    </li>
+                
+                    
+                    
+                    <li class="dplsOption dpsfFlyoutItem ">
+                        <a data-locale="ja_JP" href="/ja/docs/gamemaker/input-replay-system.html">
+                            Japanese (日本語)
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+            </div>
+            <div class="dpfSocial">
+                <span class="dpfSocialTitle">
+                    Follow Us:
+                </span>
+                
+                    <a href="https://www.youtube.com/channel/UCT9ApARFgQJOeqD-ygmxnJQ">
+                        <img src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/logo-youtube.png" alt="youtube_icon"/>
+                    </a>
+                
+                    <a href="https://www.facebook.com/AmazonAppDev">
+                        <img src="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/dex/logo-facebook._V290989945_.png" alt="facebook_icon"/>
+                    </a>
+                
+                    <a href="https://www.twitter.com/AmazonAppDev">
+                        <img src="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/dex/logo-twitter._V290989945_.png" alt="twitter_icon"/>
+                    </a>
+                
+                    <a href="/public/community/blog">
+                        <img src="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/dex/logo-blog._V290989945_.png" alt="blog_icon"/>
+                    </a>
+                
+                    <a href="https://www.twitch.tv/amazonappdev">
+                        <img src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/logo-twitch.png" alt="twitch_icon"/>
+                    </a>
+                
+            </div>
+        </div>
+    </div>
+
+    
+
+
+
+<div class="dpfAreaOfInterest dpsfFlyout">
+    <span class='dpfaCurrent'>
+        <i class='dpsfIcon dpsfIconDots'></i>
+    </span>
+    <div class="dpfWidth dpsfFlyoutWrap">
+        <div class="dpfaItems dpsfFlyoutContent">
+            <h3><hza:string id="area_of_interest_title" /></h3>
+            
+                <div class="dpfaItem dpsfFlyoutItem">
+                    <a href="/alexa">
+                        <span class='dpfaiText'>Alexa</span>
+                        <img src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/platform-logos/white/Alexalogoheaderwhite._V506548913_.png" alt="Alexa" />
+                    </a>
+                </div>
+            
+                <div class="dpfaItem dpsfFlyoutItem">
+                    <a href="/apps-and-games">
+                        <span class='dpfaiText'>Amazon Appstore</span>
+                        <img src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/platform-logos/white/Appstorelogowhite.png" alt="Amazon Appstore" />
+                    </a>
+                </div>
+            
+                <div class="dpfaItem dpsfFlyoutItem">
+                    <a href="https://aws.amazon.com">
+                        <span class='dpfaiText'>Amazon Web Services</span>
+                        <img src="https://m.media-amazon.com/images/G/01/mobile-apps/dex/platform-logos/white/AWS_logo_RGB_WHT._CB1506540482_.png" alt="Amazon Web Services" />
+                    </a>
+                </div>
+            
+        </div>
+    </div>
+</div>
+
+    <div class="dpfCopyright">
+        © 2010-2022, Amazon.com, Inc. or its affiliates. All Rights Reserved.
+    </div>
+</footer>
+        
+    </div></body>
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5LVXJD4"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+</html>

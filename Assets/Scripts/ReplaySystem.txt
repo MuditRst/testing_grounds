@@ -1,0 +1,128 @@
+ using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.IO;
+using Newtonsoft.Json;
+
+public class ReplaySystem : MonoBehaviour
+{
+
+
+    Inputs inputs = new Inputs();
+    Vector3 DefaultPosition;
+    [SerializeField]private GameObject Player;
+    [SerializeField]bool isReplaying;
+    [SerializeField]bool isRewind;
+    [SerializeField]bool isRecord;
+    [SerializeField]int count;
+
+    Vector3 MoveBy;
+
+    
+    void Start()
+    {
+        isRecord = false;
+        isReplaying = false;
+    }
+    void Awake()
+    {
+        Player = GameObject.FindGameObjectWithTag("Player");
+        DefaultPosition = Player.transform.position;
+    }
+
+    void Update()
+    {
+        if(isRecord){
+            ReadInput();
+        }
+    }
+
+    public void Record(){
+        isReplaying = false;
+        isRecord = true;
+        ReadInput();
+    }
+
+    public void Replay(){
+        isReplaying = true;
+        isRecord = false;
+        LoadInput();
+    }
+
+    public void StopRecording(){
+        isRecord = false;
+        isReplaying = false;
+        if(isRecord == false){
+            string path = "Assets/JsonData/Inputs{count}.json".Replace("{count}", Random.Range(0, 1000).ToString());
+            File.WriteAllText(path, JsonUtility.ToJson(inputs));
+            count++;
+        }
+    }
+
+
+    private void LoadInput(){
+        //Player.transform.position = DefaultPosition;
+        foreach(string line in File.ReadLines("Assets/JsonData/Inputs{count}.json".Replace("{count}", count.ToString()))){
+            
+            string[] str = line.Split(',');
+
+            
+            for(int i=0;i<str.Length;i++){
+                if(str[i].Contains("Left")){
+                    Debug.Log(str[i]);
+                    MoveBy = new Vector3(-1, 0, 0);
+                    Player.transform.position += MoveBy * Time.deltaTime * 1f;
+                }
+                if(str[i].Contains("Right")){
+                    Debug.Log(str[i]);
+                    MoveBy = new Vector3(1, 0, 0);
+                    Player.transform.position += MoveBy * Time.deltaTime * 1f;
+                }
+                if(str[i].Contains("Up")){
+                    MoveBy = new Vector3(0, 0, 1);
+                    Player.transform.position += MoveBy * Time.deltaTime * 1f;
+                }
+                if(str[i].Contains("Down")){ 
+                    Debug.Log(str[i]);
+                    MoveBy = new Vector3(0, 0, -1);
+                    Player.transform.position += MoveBy * Time.deltaTime * 1f;
+                    
+                }
+                Debug.Log(str[i]);
+               
+                
+                
+                StartCoroutine(ReplayCoroutine());
+            }
+        }
+    }
+
+
+    private void ReadInput(){
+        if(Input.GetAxisRaw("Horizontal") < 0){
+            inputs.input.Add("Left");
+        }else if(Input.GetAxisRaw("Horizontal") > 0){
+            inputs.input.Add("Right");
+        }
+        else if(Input.GetAxisRaw("Vertical") < 0){
+            inputs.input.Add("Down");
+        }
+        else if(Input.GetAxisRaw("Vertical") > 0){
+            inputs.input.Add("Up");
+        }
+        else if(Input.GetButtonDown("Jump")){
+            inputs.input.Add("Jump");
+        }
+    }
+    
+    IEnumerator ReplayCoroutine(){
+        
+        yield return new WaitForSeconds(5f);
+        
+    }
+}
+
+[System.Serializable]
+public class Inputs{
+    public List<string> input = new List<string>();
+}
