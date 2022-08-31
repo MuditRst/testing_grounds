@@ -11,10 +11,10 @@ public class ReplaySystem : MonoBehaviour
 
     List<Position> positions = new List<Position>();
     
-
+    LineRendererComponent lr;
     Inputs inputs = new Inputs();
-    Vector3 DefaultPosition;
-    [SerializeField]private GameObject Player;
+    private Vector3 DefaultPosition;
+    [SerializeField]public GameObject Player;
     [SerializeField]private float CurrentIndex;
     private float changeRate = 0;
     [SerializeField]bool isReplaying;
@@ -24,14 +24,16 @@ public class ReplaySystem : MonoBehaviour
     private bool pos,rot;
 
     public Canvas canvas;
-    List<Vector3> load_positions = new List<Vector3>();
-    List<Quaternion> load_rotations = new List<Quaternion>();
+    public List<Vector3> load_positions = new List<Vector3>();
+    protected List<Quaternion> load_rotations = new List<Quaternion>();
 
     Vector3 MoveBy;
+    
 
     
     void Start()
     {
+        lr = GetComponent<LineRendererComponent>();
         canvas.worldCamera = Camera.main;
     }
     void Awake()
@@ -61,6 +63,7 @@ public class ReplaySystem : MonoBehaviour
             Player.GetComponent<Rigidbody>().isKinematic = true;
             isReplaying = true;
             isRecord = false;
+            
         }
 
         if(Input.GetButton("BButton")){ //rewind
@@ -75,6 +78,7 @@ public class ReplaySystem : MonoBehaviour
             isReplaying = false;
             Player.transform.position = DefaultPosition;
             Player.GetComponent<Rigidbody>().isKinematic = false;
+            lr.resetLineRenderer();
         }
 
         if(Input.GetButton("RSHButton")){ //play
@@ -87,11 +91,17 @@ public class ReplaySystem : MonoBehaviour
     }
 
     private void FixedUpdate(){
+        if(!isReplaying && isRecord){
+            positions.Add(new Position{position = Player.transform.position,rotation = Player.transform.rotation});
+        }
+
         if(isReplaying){
             float nextIndex = CurrentIndex + changeRate;
             if(nextIndex < load_positions.Count && nextIndex < load_rotations.Count && nextIndex >= 0){
                 setTransform(nextIndex);
             }
+            
+            lr.LineRendererComponentFn();
         }
 
     }
@@ -102,6 +112,14 @@ public class ReplaySystem : MonoBehaviour
 
     public void LoadButton(){
         loadData();
+    }
+
+    public void Record(){
+        isRecord = true;
+    }
+
+    public void StopRecording(){
+        isRecord = false;
     }
 
     private void setTransform(float Index){
@@ -146,22 +164,6 @@ public class ReplaySystem : MonoBehaviour
                     break;
                 }
             }
-
-            // for checking if the data is loaded correctly into the local lists
-
-            // string path = Application.dataPath +"/ReplayData" + "/OUTPUT_pos.txt";
-            // StreamWriter writer = new StreamWriter(path);
-            // foreach(Vector3 pos in load_positions){
-            //     writer.WriteLine(Mathf.Round(pos.x *100f)*0.01f + "," + Mathf.Round(pos.y *100f)*0.01f + "," + Mathf.Round(pos.z *100f)*0.01f);
-            // }
-            
-
-            // string path2 = Application.dataPath +"/ReplayData" + "/OUTPUT_rot.txt";
-            // writer = new StreamWriter(path2);
-            // foreach(Quaternion rot in load_rotations){
-            //     writer.WriteLine(Mathf.Round(rot.x *100f)*0.01f + "," + Mathf.Round(rot.y *100f)*0.01f + "," + Mathf.Round(rot.z *100f)*0.01f + "," + Mathf.Round(rot.w *100f)*0.01f);
-            // }
-            // writer.Close();
             
         }
     }
@@ -176,6 +178,8 @@ public class ReplaySystem : MonoBehaviour
         }
                 
     }
+
+    
 }
 
 [System.Serializable]
