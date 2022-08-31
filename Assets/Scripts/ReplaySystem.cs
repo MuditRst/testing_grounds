@@ -1,9 +1,8 @@
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
-using System.Globalization;
-using System;
+
 
 
 public class ReplaySystem : MonoBehaviour
@@ -12,7 +11,6 @@ public class ReplaySystem : MonoBehaviour
     List<Position> positions = new List<Position>();
     
     LineRendererComponent lr;
-    Inputs inputs = new Inputs();
     private Vector3 DefaultPosition;
     [SerializeField]public GameObject Player;
     [SerializeField]private float CurrentIndex;
@@ -182,7 +180,3 @@ public class ReplaySystem : MonoBehaviour
     
 }
 
-[System.Serializable]
-public class Inputs{
-    public List<string> input = new List<string>();
-}
