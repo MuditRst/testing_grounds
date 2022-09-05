@@ -6,6 +6,7 @@ TagManager:
   tags:
   - panel
   - Panel
+  - PlayerPrefab
   layers:
   - Default
   - TransparentFX

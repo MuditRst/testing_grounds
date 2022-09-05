@@ -1,4 +1,4 @@
-
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -9,16 +9,18 @@ public class ReplaySystem : MonoBehaviour
 {
 
     List<Position> positions = new List<Position>();
+
+    public GameObject PlayerPrefab;
     
     LineRendererComponent lr;
     private Vector3 DefaultPosition;
-    [SerializeField]public GameObject Player;
+    public GameObject Player;
     [SerializeField]private float CurrentIndex;
     private float changeRate = 0;
     [SerializeField]bool isReplaying;
     [SerializeField]bool isRewind;
     [SerializeField]bool isRecord;
-    [SerializeField]int count;
+    int count;
     private bool pos,rot;
 
     public Canvas canvas;
@@ -27,8 +29,7 @@ public class ReplaySystem : MonoBehaviour
 
     Vector3 MoveBy;
     
-
-    
+    int randNum;
     void Start()
     {
         lr = GetComponent<LineRendererComponent>();
@@ -42,27 +43,6 @@ public class ReplaySystem : MonoBehaviour
 
     void Update()
     {
-        if(isReplaying || isRewind){
-            Player.GetComponent<Movement>().enabled = false;
-            if(CurrentIndex == positions.Count - 1){
-                isReplaying = false;
-                isRewind = false;
-                Player.GetComponent<Movement>().enabled = true;
-                return;
-            }
-        }
-
-        if(Input.GetButton("AButton")){ //replay
-            
-            isReplaying = true;
-            isRewind = false;
-            changeRate = 1;
-            setTransform(0);
-            Player.GetComponent<Rigidbody>().isKinematic = true;
-            isReplaying = true;
-            isRecord = false;
-            
-        }
 
         if(Input.GetButton("BButton")){ //rewind
             isRewind = true;
@@ -75,7 +55,6 @@ public class ReplaySystem : MonoBehaviour
             isRewind = false;
             isReplaying = false;
             Player.transform.position = DefaultPosition;
-            Player.GetComponent<Rigidbody>().isKinematic = false;
             lr.resetLineRenderer();
         }
 
@@ -98,10 +77,9 @@ public class ReplaySystem : MonoBehaviour
             if(nextIndex < load_positions.Count && nextIndex < load_rotations.Count && nextIndex >= 0){
                 setTransform(nextIndex);
             }
-            
-            lr.LineRendererComponentFn();
         }
 
+        randNum = RandNum();
     }
 
     public void SaveButton(){
@@ -120,13 +98,23 @@ public class ReplaySystem : MonoBehaviour
         isRecord = false;
     }
 
+    public void Replay(){
+        isReplaying = true;
+        isRewind = false;
+        changeRate = 1;
+        
+        setTransform(0);
+        isRecord = false;
+    }
+
     private void setTransform(float Index){
+        
         CurrentIndex = Index;
         Vector3 position = load_positions[(int)Index];
         Quaternion rotation = load_rotations[(int)Index];
 
-        Player.transform.position = position;
-        Player.transform.rotation = rotation;
+        PlayerPrefab.transform.position = position;
+        PlayerPrefab.transform.rotation = rotation;
     }
 
     private void saveData(){
@@ -137,21 +125,23 @@ public class ReplaySystem : MonoBehaviour
             writer.WriteLine(Mathf.Round(pos.rotation.x *100f)*0.01f + "," + Mathf.Round(pos.rotation.y *100f)*0.01f + "," + Mathf.Round(pos.rotation.z *100f)*0.01f);
         }
         writer.Close();
-        
-
     }
 
     private void loadData(){
-        string[] files = Directory.GetFiles(Application.dataPath +"/ReplayData");
+        
+        string[] files = Directory.GetFiles(Application.dataPath +"/ReplayData","*.txt");
 
         foreach(string file in files){
-
+            if(GameObject.FindGameObjectsWithTag("PlayerPrefab").Length < files.Length){
+                Instantiate(PlayerPrefab, DefaultPosition, Quaternion.identity);
+                PlayerPrefab = GameObject.FindGameObjectWithTag("PlayerPrefab");
+            }
             int i=1;
             StreamReader stream = new StreamReader(file);
             string lineReader = stream.ReadToEnd();
             string[] lines = lineReader.Split('\n');
+            
             foreach(string line in lines){
-                //Debug.Log(line);
                 string Trimmedline = line.TrimEnd(new char[] {'\r'});
                 string[] values = Trimmedline.Split(',');
                 
@@ -162,21 +152,27 @@ public class ReplaySystem : MonoBehaviour
                     break;
                 }
             }
+            stream.Close();
             
+            lr.LineRendererComponentFn(randNum);
         }
     }
 
     void AddData(string[] lines,int i){
-        if(i%2 != 0 && lines[0] != null){
-            load_positions.Add(new Vector3(float.Parse(lines[0]),float.Parse(lines[1]),float.Parse(lines[2])));             
-        }
-        if(i%2 == 0 && lines[0] != null){
-            load_rotations.Add(new Quaternion(float.Parse(lines[0]),float.Parse(lines[1]),float.Parse(lines[2]),0));
-                    
+        if(float.TryParse(lines[0],out float x) && float.TryParse(lines[1],out float y) && float.TryParse(lines[2],out float z)){
+            if(i%2 != 0 && lines[0] != null){
+                load_positions.Add(new Vector3(float.Parse(lines[0]),float.Parse(lines[1]),float.Parse(lines[2])));             
+            }
+            if(i%2 == 0 && lines[0] != null){
+                load_rotations.Add(new Quaternion(float.Parse(lines[0]),float.Parse(lines[1]),float.Parse(lines[2]),0));
+                        
+            }
         }
                 
     }
 
-    
+    private int RandNum(){
+        return Random.Range(0, 8);
+    }
 }
 

@@ -6,6 +6,8 @@ public class LineRendererComponent : MonoBehaviour
 {
     private LineRenderer lineRenderer;
     ReplaySystem replaySystem;
+
+    private Color[] colorList = {Color.red, Color.green, Color.blue, Color.yellow, Color.cyan, Color.magenta, Color.white, Color.black};
     
     void Start(){
         replaySystem = GetComponent<ReplaySystem>();
@@ -16,16 +18,16 @@ public class LineRendererComponent : MonoBehaviour
     public void resetLineRenderer(){
         lineRenderer.positionCount = 0;
     }
-    void setLineRenderer(){
-        Color red = Color.red;
-        
+    void setLineRenderer(int num){
+        Color c =  colorList[num];
+        Debug.Log(c);
         lineRenderer.material = new Material(material);
-        lineRenderer.startColor = red;
+        material.color = c;
         lineRenderer.startWidth = 0.01f;
         lineRenderer.endWidth = 0.01f;
     }
-    public void LineRendererComponentFn(){
-        setLineRenderer();
+    public void LineRendererComponentFn(int num){
+        setLineRenderer(num);
         
         lineRenderer.positionCount = replaySystem.load_positions.Count;
 
@@ -35,5 +37,7 @@ public class LineRendererComponent : MonoBehaviour
         }
     }
 
+
+    
 
 }
